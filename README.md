@@ -18,6 +18,19 @@ module ApplicationHelper
 end
 ```
 
+Override the `local_prefixes` method in your controllers, which lets you 
+write `component 'modal'` instead of `component 'components/modal'`:
+
+```
+class ApplicationController < ActionController::Base
+
+  private
+
+  def self.local_prefixes
+    super + ['components']
+  end
+end
+```
 
 ## Examples:
 
