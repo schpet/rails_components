@@ -2,6 +2,23 @@
 
 It allows you to write reusable components in your rails views.
 
+## Installation
+
+Install the rails components gem by adding it to your Gemfile:
+
+```rb
+gem 'rails_components'
+```
+
+Include RailsComponents in your app/helpers/application_helper.rb:
+
+```rb
+module ApplicationHelper
+  include RailsComponents
+end
+```
+
+
 ## Examples:
 
 Bootstrap modal, with an ID, in erb:
@@ -41,7 +58,8 @@ Bootstrap modal, with an ID, in erb:
 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 ```
 
+
 # Goals
 
 - make it as easy to write reusable components
-- feel familiar to existing rails helpers, like content_tag
+- feel familiar to existing rails helpers, like `link_to` or `content_tag` 
