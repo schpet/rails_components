@@ -7,6 +7,6 @@ Gem::Specification.new do |s|
   s.email        = ['rubygems@peterschilling.org']
   s.files        = Dir["{lib}/**/*.rb", "LICENSE", "*.md"]
   s.require_path = 'lib'
-  s.homepage     = 'http://peterschilling.org/#TODO'
+  s.homepage     = 'https://github.com/schpet/rails_components'
   s.license      = 'MIT'
 end
