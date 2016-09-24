@@ -3,6 +3,9 @@
 write reusable components in your rails views. a thin wrapper around `render`
 that makes passing blocks and html attributes to partials simple as pie.
 
+it simplifies template reuse, which is particularily helpful when using
+utility/atomic/functional type css classes.
+
 ## Installation
 
 get the gem
@@ -205,7 +208,7 @@ it a special key: `html_merge_strategy`, with one of these values:
         <button data-dismiss="modal" type="button" class="close" aria-label="close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">Cool</h1>
+        <h4 class="modal-title">Cool</h4>
       </div>
       <div class="modal-body">
         <p>Some important stuff!</p>
@@ -218,6 +221,25 @@ it a special key: `html_merge_strategy`, with one of these values:
 </div>
 ```
 
+now I can now implement a modal without any knowledge of what CSS classnames are
+needed, or have to re-implement aria attributes:
+
+```erb
+<%= component 'modal', id: "modal-with-form", class: "google-modal" do %>
+  <%= component 'modal/header', "Cool" %>
+  <form action="http://google.com" method="get">
+    <%= component 'modal/body' do %>
+      <label class="font-weight-bold">
+        Search
+        <%= text_field_tag :q, nil, class: "form-control" %>
+      </label>
+    <% end %>
+    <%= component 'modal/footer' do %>
+      <button type="submit" class="btn btn-primary">Search</button>
+    <% end %>
+  </form>
+<% end %>
+```
 
 ### A navbar, based off of the [basscss guide](http://www.basscss.com/v7/docs/guides/ui/#navbars)
 
