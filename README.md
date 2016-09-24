@@ -235,6 +235,14 @@ And allowing you to use reserved words, which doesn't work with render
 <%= component 'modal', 'Modal content!', class: "fancy-modal" do %>
 ```
 
+## What's the future of this project, will it be maintained, etc
+
+Hard to say. If you're worried about dependencies, copy it into your project
+as a helper. I would be surprised if `render` gets any big changes.
+
+This project serves more as documentation and examples of how to write
+components in a rails app (as opposed to adhoc files in `app/views/shared`.)
+
 ## Configuration
 
 TODO
