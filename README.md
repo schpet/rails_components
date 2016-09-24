@@ -243,7 +243,7 @@ needed, or have to re-implement aria attributes:
 
 ### A navbar, based off of the [basscss guide](http://www.basscss.com/v7/docs/guides/ui/#navbars)
 
-```
+```erb
 <!-- in a view -->
 <%= component 'navbar', class: "white bg-green" do %>
   <div class="left">
@@ -276,7 +276,7 @@ needed, or have to re-implement aria attributes:
 
 ### Tachyons [image with title and subtitle](http://tachyons.io/components/collections/square-title-subtitle/index.html)
 
-```
+```erb
 <%= component "square", 'Title of piece',
     subtitle: "Subtitle of piece", image_url: "http://mrmrs.io/images/0008.jpg" %>
 ```
