@@ -1,7 +1,7 @@
 # Rails Components
 
-write reusable components in your rails views. especially useful when building
-up styled components with utility/atomic/functional css classes.
+write reusable components in your rails views. a thin wrapper around `render`
+that makes passing blocks, and html attributes to templates simple as pie.
 
 ## Installation
 
