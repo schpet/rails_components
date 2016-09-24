@@ -1,16 +1,17 @@
 # Rails Components
 
-Write reusable components in your rails views.
+write reusable components in your rails views. especially useful when building
+up styled components with utility/atomic/functional css classes.
 
 ## Installation
 
-Install the rails components gem by adding it to your Gemfile:
+get the gem
 
 ```rb
 gem 'rails_components'
 ```
 
-and make the `component` helper available in your views:
+and make the `component` helper available in your views
 
 ```rb
 module ApplicationHelper
@@ -20,7 +21,7 @@ end
 
 ## Usage
 
-A component is a template that yields, in `app/views/components` by default
+a component is a template that yields
 
 ```erb
 <!-- app/views/components/_my_cool_component.html.erb -->
@@ -29,50 +30,35 @@ A component is a template that yields, in `app/views/components` by default
 </div>
 ```
 
-You can call `component 'the_component_name'` and pass it a block, and it works
-like `render layout: ...`.
+you can pass a block to a component
 
 ```erb
+<!-- an example view -->
 <div>
   <h1>My website!</h1>
   <%= component 'my_cool_component' do %>
     <p>It's great.</p>
   <% end %>
 </div>
-
-<!-- output: -->
-<div>
-  <h1>My website!</h1>
-  <div class="my-cool-component">
-    <p>It's great.</p>
-  </div>
-</div>
 ```
 
-If you're just passing a string to your component, you can pass them an
-argument instead of a block, like `link_to` or `content_tag`:
+or use an argument instead of a block, like `link_to` or `content_tag`
 
 ```erb
+<!-- an example view -->
 <%= component 'my_cool_component', "It's real good." %>
-
-<!-- output: -->
-<div class="my-cool-component">
-  It&#39;s real good.
-</div>
 ```
 
-Sometimes your component doesn't need anything at all
+sometimes your component doesn't need anything at all
 
-```
-<%= component 'logo' %>
-
-<!-- output: -->
-<div class="brand">
-  <img src="logo.gif" alt="Us!" />
-</div>
+```erb
+<!-- an example view -->
+<%= component 'site_logo' %>
 ```
 
-Components are given access to a special method: `props`.
+components live in `app/views/components` by default.
+
+they have a special method: `props`.
 `props` is the same as `local_assigns` except it includes reserved words like
 `class`, making it useful for passing html attributes.
 
@@ -82,11 +68,13 @@ Components are given access to a special method: `props`.
   <%= yield %>
 <% end %>
 
-<!-- within any view: -->
-<%= component 'box1', class: "box", data: { foo: 'bar' } do %>
+<!-- an example view -->
+<%= component 'box', class: "box", data: { foo: 'bar' } do %>
   <p>my box!</p>
 <% end %>
+```
 
+```html
 <!-- output -->
 <div class="box" data-foo="bar">
   <p>my box!</p>
@@ -101,15 +89,23 @@ Components are given access to a special method: `props`.
   <%= yield %>
 <% end %>
 
+<!-- an example view -->
+<%= component 'box', class: "big" do %>
+  <p>my big box!</p>
+<% end %>
+```
+
+```html
 <!-- output -->
 <div class="big box">
   <p>my big box!</p>
 </div>
 ```
 
-If you're using haml, it already does this for you, and you can use props directly:
+if you're using haml, it already does this for you, and you can use props directly:
 
 ```haml
+/ component
 .box{ props }
   = yield
 ```
@@ -120,7 +116,92 @@ If you're using haml, it already does this for you, and you can use props direct
 [Bootstrap modal][bsmodal]:
 
 ```erb
+<!-- an example view -->
+<%= component 'modal', id: "important-message", class: "my-fancy-modal" do %>
+  <%= component 'modal/header', "Cool" %>
+  <%= component 'modal/body' do %>
+    <p>
+      Some important stuff!
+    </p>
+  <% end %>
+  <%= component 'modal/footer' %>
+<% end %>
 ```
+
+```erb
+<!-- components -->
+
+<!-- app/views/components/_modal.html.erb -->
+<%= content_tag :div, props.html(class: 'modal fade', tabindex: '-1', role: 'dialog') do %>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <%= yield %>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+<% end %>
+
+<!-- app/views/components/modal/_header.html.erb -->
+<%= component 'modal/header_container' do %>
+  <%= component 'close_button', data: { dismiss: "modal" } %>
+  <%= component 'modal/title' do %>
+    <%= yield %>
+  <% end %>
+<% end %>
+
+<!-- app/views/components/modal/_header_container.html.erb -->
+<%= content_tag :div, props.html(class: "modal-header") do %>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/modal/_title.html.erb -->
+<%= content_tag props.fetch(:tag, "h4"), props.html(class: "modal-title").except(:tag) do %>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/_close_button.html.erb -->
+<%= content_tag :button, props.html(type: 'button', class: 'close', :"aria-label" => 'close' ) do %>
+  <span aria-hidden="true">&times;</span>
+<% end %>
+
+<!-- app/views/components/modal/_body.html.erb -->
+<%= content_tag :div, props.html(class: 'modal-body') do %>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/modal/_footer.html.erb -->
+<%= component 'modal/footer_container', props do %>
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/modal/_footer_container.html.erb -->
+<%= content_tag :div, props.html(class: "modal-footer") do %>
+  <%= yield %>
+<% end %>
+```
+
+```html
+<!-- output -->
+<div id="important-message" class="my-fancy-modal modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button data-dismiss="modal" type="button" class="close" aria-label="close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Cool</h1>
+      </div>
+      <div class="modal-body">
+        <p>Some important stuff!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+```
+
 
 [Basscss navigation]
 
@@ -136,6 +217,7 @@ TODO
 ## TODO
 
 - tests
+- test configuration
 - figure out how to make vim-rails jump to files (gf) properly
 - point out that mixing erb and haml has issues
 
