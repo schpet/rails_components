@@ -1,7 +1,7 @@
 # Rails Components
 
 write reusable components in your rails views. a thin wrapper around `render`
-that makes passing blocks, and html attributes to templates simple as pie.
+that makes passing blocks and html attributes to partials simple as pie.
 
 ## Installation
 
@@ -104,6 +104,30 @@ if you're using haml, it already does this for you, and you can use props direct
   = yield
 ```
 
+by default `html` combines the classes and html attributes, but you can pass
+it a special key: `html_merge_strategy`, with one of these values:
+- `:combine` - (default) values on duplicated keys are combined in an array
+- `:merge` - normal ruby merge, duplicate keys are overriden by props' values
+- `:replace` - only the attributes passed in by props are used
+
+```
+<!-- component -->
+<%= content_tag :div, props.html(class: "box") do %>
+  <%= yield %>
+<% end %>
+
+<!-- in a view -->
+<%= component 'box', class: "big rectangle", html_merge_strategy: :merge do %>
+  <p>not a box!</p>
+<% end %>
+```
+
+```html
+<!-- output -->
+<div class="big rectangle">
+  <p>not a box!</p>
+</div>
+```
 
 ## Bigger Examples
 
@@ -120,10 +144,8 @@ if you're using haml, it already does this for you, and you can use props direct
   <% end %>
   <%= component 'modal/footer' %>
 <% end %>
-```
 
-```erb
-<!-- components -->
+<!-- the components -->
 
 <!-- app/views/components/_modal.html.erb -->
 <%= content_tag :div, props.html(class: 'modal fade', tabindex: '-1', role: 'dialog') do %>
@@ -220,18 +242,87 @@ if you're using haml, it already does this for you, and you can use props direct
 <%= content_tag :div, props.html(class: "clearfix mb2") do %>
   <%= yield %>
 <% end %>
+
+<!-- app/views/components/navbar/_item.html.erb -->
+<%= link_to href, props.html(class: "btn m0 py2") do %>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/_input.html.erb -->
+<%= text_field_tag local_assigns[:name], local_assigns[:value], props.html(class: "input border-box").except(:name, :value) %>
+```
+
+### Tachyons [image with title and subtitle](http://tachyons.io/components/collections/square-title-subtitle/index.html)
+
+```
+<%= component "square", 'Title of piece',
+    subtitle: "Subtitle of piece", image_url: "http://mrmrs.io/images/0008.jpg" %>
 ```
 
 ```erb
-<!-- app/views/components/navbar/_item.html.erb -->
-<%= link_to href, props.html(class: "btn m0 py2") do %>
+<!-- component -->
+<article class="fl w-100 w-50-m  w-25-ns pa2-ns">
+  <div class="aspect-ratio aspect-ratio--1x1">
+    <img style="background-image:url(<%= j image_url %>);"
+         class="db bg-center cover aspect-ratio--object" />
+  </div>
+  <%= link_to url, class: "ph2 ph0-ns pb3 link db" do %>
+    <h3 class="f5 f4-ns mb0 black-90"><%= yield %></h3>
+    <h3 class="f6 f5 fw4 mt2 black-60"><%= subtitle %></h3>
+  <% end %>
+</article>
+```
+
+You might find later that you need to reuse and change specific parts of this
+component, or use it with it's contents in a different order.
+You can split it up into many small components as needed, without having to
+change the original way your component is used:
+
+```erb
+<!-- component -->
+<%= component 'square/container' do %>
+  <%= component 'square/image_container' do %>
+    <%= component 'square/image', props.slice(:image_url) %>
+  <% end %>
+  <%= component 'square/link', props.slice(:url) do %>
+    <%= component 'square/title' do %><%= yield %><% end %>
+    <%= component 'square/subtitle', subtitle %>
+  <% end %>
+<% end %>
+
+<!-- app/views/components/square/_container.html.erb -->
+<%= content_tag :article, props.html(class: "fl w-100 w-50-m w-25-ns pa2-ns") do %>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/square/_image.html.erb -->
+<%= image_tag '', props.html(style: "background-image:url(#{j image_url});",
+                             class: "db bg-center cover aspect-ratio--object") %>
+
+<!-- app/views/components/square/_image_container.html.erb -->
+<%= content_tag :div, props.html(class: "aspect-ratio aspect-ratio--1x1") do %>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/square/_link.html.erb -->
+<%= link_to props[:url], props.html(class: "ph2 ph0-ns pb3 link db").except(:url) do %>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/square/_subtitle.html.erb -->
+<%= content_tag props.fetch(:tag_name, :h3), props.html(class: "f6 f5 fw4 mt2 black-60").except(:tag_name) do %>
+  <%= yield %>
+<% end %>
+
+<!-- app/views/components/square/_title.html.erb -->
+<%= content_tag props.fetch(:tag_name, :h3), props.html(class: "f5 f4-ns mb0 black-90").except(:tag_name) do %>
   <%= yield %>
 <% end %>
 ```
 
 ## How this compares to `render`
 
-`component` is a wrapper around `render` [under the hood](./lib/rails_components.rb):
+`component` [is a wrapper](./lib/rails_components.rb) around `render`
 
 ```erb
 <%= component 'modal', title: "Example" do %>
@@ -239,28 +330,28 @@ if you're using haml, it already does this for you, and you can use props direct
 <% end %>
 ```
 
+is equivalent to:
+
 ```erb
 <%= render layout: 'component/modal', locals: { title: "Example" } do %>
   Modal content!
 <% end %>
 ```
 
-Where it shines is taking arguments instead of blocks
+where it shines is taking arguments instead of blocks
 
 ```erb
 <%= component 'modal', 'Modal content!', title: "Example" do %>
 ```
 
-And allowing you to use reserved words, which doesn't work with render
+and allowing you to use reserved words, which doesn't work with render
 
 ```erb
-<!-- won't work! rails can't make `class` a local variable -->
+<!-- won't work! rails tries to make "class" a local variable -->
 <%= render layout: 'component/modal', locals: { class: "fancy-modal" } do %>
   Modal content!
 <% end %>
-```
 
-```erb
 <!-- works! -->
 <%= component 'modal', 'Modal content!', class: "fancy-modal" do %>
 ```
@@ -269,7 +360,8 @@ And allowing you to use reserved words, which doesn't work with render
 
 Working on rails apps where the same css class declarations were repeated
 many times over, making changing common components very difficult. This
-type of abstraction is very helpful when using functional/atomic/utility css classes.
+abstraction is particularily helpful when using functional/atomic/utility css
+classes.
 
 From the [basscss docs](http://www.basscss.com/v7/docs/guides/tips/#handle-complexity-in-markup):
 
@@ -294,10 +386,11 @@ TODO
 
 Hard to say. If you're worried about dependencies, copy it into your project
 as a helper. render's api is probably not getting any big changes, so hopefully
-this project creates a minimal amount of headaches.
+it creates a minimal amount of headaches.
 
 This project's goal is to act as documentation and examples of how to write
-components in a rails app (as opposed to adhoc files in `app/views/shared`.)
+components in a rails app. adhoc files in `app/views/shared` doesn't make
+anyone happy.
 
 
 ## TODO
