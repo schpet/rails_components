@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name         = 'rails_components'
-  s.version      = '0.0.0'
+  s.version      = '0.0.1'
   s.date         = '2016-09-23'
   s.summary      = "Rails view components"
   s.authors      = ["Peter Schilling"]

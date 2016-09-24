@@ -5,7 +5,7 @@ module RailsComponents
   COMPONENT_RESERVED_WORDS = %i(class return super).freeze
 
   def component(component_template, text_or_locals_with_block = nil, locals = nil, &block)
-    unless RailsComponents.configuration.template_directory.nil?
+    if RailsComponents.configuration.template_directory
       component_template = [RailsComponents.configuration.template_directory, component_template].join('/')
     end
 
