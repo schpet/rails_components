@@ -1,4 +1,4 @@
-require 'rails_components/merge_html'
+require 'rails_components/html_helpers'
 require 'rails_components/configuration'
 
 module RailsComponents
@@ -11,6 +11,8 @@ module RailsComponents
 
     if block_given?
       render({ layout: component_template, locals: component_locals(text_or_locals_with_block) }, &block)
+    elsif text_or_locals_with_block.is_a?(Hash) && locals.nil?
+      render(layout: component_template, locals: component_locals(text_or_locals_with_block)) {}
     else
       render(layout: component_template, locals: component_locals(locals)) { text_or_locals_with_block }
     end
@@ -39,7 +41,7 @@ module RailsComponents
   # - https://github.com/rails/rails/blob/master/actionview/lib/action_view/template.rb
   def component_locals(locals)
     locals ||= {}
-    locals.extend(MergeHtml)
+    locals.extend(HtmlHelpers)
     locals.except(*COMPONENT_RESERVED_WORDS).merge(props: locals)
   end
 end
