@@ -52,10 +52,9 @@ or pass it an argument instead of a block, like `link_to` or `content_tag`
 
 they live in `app/views/components` by default.
 
-components have a special method: `props`.
-
-`props` is the same as `local_assigns` except it includes reserved words like
-`class`, making it useful for passing html attributes.
+components have a special method: `props`.  `props` is the same as the
+template's local variables, except it includes reserved words like `class`.
+This makes it useful for passing html attributes like `class`.
 
 ```erb
 <!-- component -->
@@ -225,7 +224,7 @@ Where it shines is taking arguments instead of blocks
 And allowing you to use reserved words, which doesn't work with render
 
 ```
-<!-- you will get an error when rails tries to turn `class` into a method -->
+<!-- won't work! rails can't make `class` a local variable -->
 <%= render layout: 'component/modal', locals: { class: "fancy-modal" } do %>
   Modal content!
 <% end %>
