@@ -31,25 +31,25 @@ a component is a template
 <div class="my-cool-component">Hello!</div>
 ```
 
-a component can yield, and you can pass a block to it
+a component can yield a block
 
 ```erb
 <!-- app/views/components/_my_cool_component.html.erb -->
 <div class="my-cool-component"><%= yield %></div>
 ```
 
+this is how you use a component in your view
+
 ```erb
-<!-- in a view -->
 <h1>My website!</h1>
 <%= component 'my_cool_component' do %>
   <p>It's great.</p>
 <% end %>
 ```
 
-or pass it an argument instead of a block, like `link_to` or `content_tag`
+you can pass it an argument instead of a block, like `link_to` or `content_tag`
 
 ```erb
-<!-- in a view -->
 <%= component 'my_cool_component', "It's great." %>
 ```
 
@@ -109,7 +109,7 @@ if you're using haml, it already does this for you, and you can use props direct
 
 by default `html` combines the classes and html attributes, but you can pass
 it a special key: `html_merge_strategy`, with one of these values:
-- `:combine` - (default) values on duplicated keys are combined in an array
+- `:combine` - (default) values on duplicated keys are combined as an array
 - `:merge` - normal ruby merge, duplicate keys are overriden by props' values
 - `:replace` - only the attributes passed in by props are used
 
@@ -241,7 +241,7 @@ needed, or have to re-implement aria attributes:
 <% end %>
 ```
 
-### A navbar, based off of the [basscss guide](http://www.basscss.com/v7/docs/guides/ui/#navbars)
+### [Basscss: navbar example from UI guide](http://www.basscss.com/v7/docs/guides/ui/#navbars)
 
 ```erb
 <!-- in a view -->
@@ -274,7 +274,7 @@ needed, or have to re-implement aria attributes:
 <%= text_field_tag local_assigns[:name], local_assigns[:value], props.html(class: "input border-box").except(:name, :value) %>
 ```
 
-### Tachyons [image with title and subtitle](http://tachyons.io/components/collections/square-title-subtitle/index.html)
+### [Tachyons: image with title and subtitle](http://tachyons.io/components/collections/square-title-subtitle/index.html)
 
 ```erb
 <%= component "square", 'Title of piece',
