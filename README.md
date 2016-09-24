@@ -107,7 +107,7 @@ if you're using haml, it already does this for you, and you can use props direct
 
 ## Bigger Examples
 
-[Bootstrap modal][bsmodal]:
+### [Bootstrap modal](http://v4-alpha.getbootstrap.com/components/modal/)
 
 ```erb
 <!-- in a view -->
@@ -197,7 +197,37 @@ if you're using haml, it already does this for you, and you can use props direct
 ```
 
 
-[Basscss navigation]
+### A navbar, based off of the [basscss guide](http://www.basscss.com/v7/docs/guides/ui/#navbars)
+
+```
+<!-- in a view -->
+<%= component 'navbar', class: "white bg-green" do %>
+  <div class="left">
+    <%= component 'navbar/item', "Burgers", href: "#!" %>
+    <%= component 'navbar/item', "An example", href: "#!", class: "btn-narrow" %>
+  </div>
+  <div class="right">
+    <%= component 'navbar/item', "My Account", href: "#!" %>
+  </div>
+  <div class="overflow-hidden px2 py1">
+    <%= component 'input', name: "whatever", class: "right m0 fit bg-darken-1", placeholder: "Search" %>
+  </div>
+<% end %>
+```
+
+```erb
+<!-- app/views/components/_navbar.html.erb -->
+<%= content_tag :div, props.html(class: "clearfix mb2") do %>
+  <%= yield %>
+<% end %>
+```
+
+```erb
+<!-- app/views/components/navbar/_item.html.erb -->
+<%= link_to href, props.html(class: "btn m0 py2") do %>
+  <%= yield %>
+<% end %>
+```
 
 ## How this compares to `render`
 
@@ -235,22 +265,40 @@ And allowing you to use reserved words, which doesn't work with render
 <%= component 'modal', 'Modal content!', class: "fancy-modal" do %>
 ```
 
-## What's the future of this project, will it be maintained, etc
+## Motivation
 
-Hard to say. If you're worried about dependencies, copy it into your project
-as a helper. I would be surprised if `render` gets any big changes.
+Working on rails apps where the same css class declarations were repeated
+many times over, making changing common components very difficult. This
+type of abstraction is very helpful when using functional/atomic/utility css classes.
 
-This project serves more as documentation and examples of how to write
-components in a rails app (as opposed to adhoc files in `app/views/shared`.)
+From the [basscss docs](http://www.basscss.com/v7/docs/guides/tips/#handle-complexity-in-markup):
+
+> Large projects will inevitably become more complex. Handling and
+> maintaining that complexity in markup templates is much easier than
+> adding complexity to your stylesheet. Before abstracting combinations
+> of styles out in to new styles, make sure to look for patterns and
+> think about reusability, and consider ways in which your templating
+> engine can DRY up your code. If you’re constantly duplicating the
+> same markup to create UI elements like media player controls or
+> modals, make use of things like partials, helpers, or __components__
+> to keep things maintainable.
+
+(emphasis added)
+
 
 ## Configuration
 
 TODO
 
-## Goals
+## What's the future of this project, will it be maintained, etc
 
-- make it as easy to write reusable components
-- feel familiar to existing rails helpers, like `link_to` or `content_tag`
+Hard to say. If you're worried about dependencies, copy it into your project
+as a helper. render's api is probably not getting any big changes, so hopefully
+this project creates a minimal amount of headaches.
+
+This project's goal is to act as documentation and examples of how to write
+components in a rails app (as opposed to adhoc files in `app/views/shared`.)
+
 
 ## TODO
 
@@ -259,5 +307,3 @@ TODO
 - figure out how to make vim-rails jump to files (gf) properly
 - point out that mixing erb and haml has issues
 
-[bsmodal]: http://v4-alpha.getbootstrap.com/components/modal/
-[bspanel]: http://v4-alpha.getbootstrap.com/components/card/
