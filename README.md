@@ -203,13 +203,13 @@ if you're using haml, it already does this for you, and you can use props direct
 
 `component` is a wrapper around `render` [under the hood](./lib/rails_components.rb):
 
-```
+```erb
 <%= component 'modal', title: "Example" do %>
   Modal content!
 <% end %>
 ```
 
-```
+```erb
 <%= render layout: 'component/modal', locals: { title: "Example" } do %>
   Modal content!
 <% end %>
@@ -217,20 +217,20 @@ if you're using haml, it already does this for you, and you can use props direct
 
 Where it shines is taking arguments instead of blocks
 
-```
+```erb
 <%= component 'modal', 'Modal content!', title: "Example" do %>
 ```
 
 And allowing you to use reserved words, which doesn't work with render
 
-```
+```erb
 <!-- won't work! rails can't make `class` a local variable -->
 <%= render layout: 'component/modal', locals: { class: "fancy-modal" } do %>
   Modal content!
 <% end %>
 ```
 
-```
+```erb
 <!-- works! -->
 <%= component 'modal', 'Modal content!', class: "fancy-modal" do %>
 ```
