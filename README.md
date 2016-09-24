@@ -53,7 +53,7 @@ or pass it an argument instead of a block, like `link_to` or `content_tag`
 they live in `app/views/components` by default.
 
 components have a special method: `props`.  `props` is the same as the
-template's local variables, except it includes reserved words like `class`.
+template's local variables, except it includes reserved words.
 This makes it useful for passing html attributes like `class`.
 
 ```erb
