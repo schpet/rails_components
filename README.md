@@ -21,44 +21,39 @@ end
 
 ## Usage
 
-a component is a template that yields
+a component is a template
 
 ```erb
 <!-- app/views/components/_my_cool_component.html.erb -->
-<div class="my-cool-component">
-  <%= yield %>
-</div>
+<div class="my-cool-component">Hello!</div>
 ```
 
-you can pass a block to a component
+a component can yield, and you can pass a block to it
 
 ```erb
-<!-- an example view -->
-<div>
-  <h1>My website!</h1>
-  <%= component 'my_cool_component' do %>
-    <p>It's great.</p>
-  <% end %>
-</div>
+<!-- app/views/components/_my_cool_component.html.erb -->
+<div class="my-cool-component"><%= yield %></div>
 ```
-
-or use an argument instead of a block, like `link_to` or `content_tag`
 
 ```erb
-<!-- an example view -->
-<%= component 'my_cool_component', "It's real good." %>
+<!-- in a view -->
+<h1>My website!</h1>
+<%= component 'my_cool_component' do %>
+  <p>It's great.</p>
+<% end %>
 ```
 
-sometimes your component doesn't need anything at all
+or pass it an argument instead of a block, like `link_to` or `content_tag`
 
 ```erb
-<!-- an example view -->
-<%= component 'site_logo' %>
+<!-- in a view -->
+<%= component 'my_cool_component', "It's great." %>
 ```
 
-components live in `app/views/components` by default.
+they live in `app/views/components` by default.
 
-they have a special method: `props`.
+components have a special method: `props`.
+
 `props` is the same as `local_assigns` except it includes reserved words like
 `class`, making it useful for passing html attributes.
 
@@ -68,7 +63,7 @@ they have a special method: `props`.
   <%= yield %>
 <% end %>
 
-<!-- an example view -->
+<!-- in a view -->
 <%= component 'box', class: "box", data: { foo: 'bar' } do %>
   <p>my box!</p>
 <% end %>
@@ -89,7 +84,7 @@ they have a special method: `props`.
   <%= yield %>
 <% end %>
 
-<!-- an example view -->
+<!-- in a view -->
 <%= component 'box', class: "big" do %>
   <p>my big box!</p>
 <% end %>
@@ -116,7 +111,7 @@ if you're using haml, it already does this for you, and you can use props direct
 [Bootstrap modal][bsmodal]:
 
 ```erb
-<!-- an example view -->
+<!-- in a view -->
 <%= component 'modal', id: "important-message", class: "my-fancy-modal" do %>
   <%= component 'modal/header', "Cool" %>
   <%= component 'modal/body' do %>
@@ -204,6 +199,42 @@ if you're using haml, it already does this for you, and you can use props direct
 
 
 [Basscss navigation]
+
+## How this compares to `render`
+
+`component` is a wrapper around `render` [under the hood](./lib/rails_components.rb):
+
+```
+<%= component 'modal', title: "Example" do %>
+  Modal content!
+<% end %>
+```
+
+```
+<%= render layout: 'component/modal', locals: { title: "Example" } do %>
+  Modal content!
+<% end %>
+```
+
+Where it shines is taking arguments instead of blocks
+
+```
+<%= component 'modal', 'Modal content!', title: "Example" do %>
+```
+
+And allowing you to use reserved words, which doesn't work with render
+
+```
+<!-- you will get an error when rails tries to turn `class` into a method -->
+<%= render layout: 'component/modal', locals: { class: "fancy-modal" } do %>
+  Modal content!
+<% end %>
+```
+
+```
+<!-- works! -->
+<%= component 'modal', 'Modal content!', class: "fancy-modal" do %>
+```
 
 ## Configuration
 
