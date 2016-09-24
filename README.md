@@ -1,6 +1,7 @@
 # Rails Components
 
-It allows you to write reusable components in your rails views.
+Write reusable components in your rails views. It's not much more than a 
+convenient wrapper around rails' `render`.
 
 ## Installation
 
@@ -18,23 +19,14 @@ module ApplicationHelper
 end
 ```
 
-Override the `local_prefixes` method in your controllers, which lets you 
-write `component 'modal'` instead of `component 'components/modal'`:
+## Configuration
 
+## Examples
+
+[Bootstrap modal][bsmodal], with an ID, in erb:
+
+```erb
 ```
-class ApplicationController < ActionController::Base
-
-  private
-
-  def self.local_prefixes
-    super + ['components']
-  end
-end
-```
-
-## Examples:
-
-Bootstrap modal, with an ID, in erb:
 
 ```erb
 <% content_tag :div, class: ['modal', props[:class]] do %>
@@ -72,7 +64,14 @@ Bootstrap modal, with an ID, in erb:
 ```
 
 
-# Goals
+## Goals
 
 - make it as easy to write reusable components
 - feel familiar to existing rails helpers, like `link_to` or `content_tag` 
+
+## TODO
+
+- tests
+- figure out how to make vim-rails jump to files (gf) properly
+
+[bsmodal]: http://v4-alpha.getbootstrap.com/components/modal/
