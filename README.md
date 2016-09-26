@@ -6,6 +6,8 @@ that makes passing blocks and html attributes to partials simple as pie.
 it simplifies template reuse, which is particularily helpful when using
 utility/atomic/functional type css classes.
 
+⚠️ this code is fresh, and api is liable to change ⚠️
+
 ## Installation
 
 get the gem
@@ -417,6 +419,7 @@ anyone happy.
 
 ## TODO
 
+- get feedback on api, make it somewhat final
 - tests
 - test configuration
 - figure out how to make vim-rails jump to files (gf) properly
