@@ -1,3 +1,6 @@
+(update: this probably makes more sense as [improvements to rails](https://github.com/rails/rails/pull/26672))
+
+
 # Rails Components
 
 write reusable components in your rails views. a thin wrapper around `render`
